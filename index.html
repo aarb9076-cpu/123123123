@@ -248,6 +248,18 @@
             color: var(--active);
         }
         
+        .balance-change {
+            font-size: 28px;
+        }
+        
+        .profit {
+            color: var(--success);
+        }
+        
+        .loss {
+            color: var(--danger);
+        }
+        
         /* Сигналы */
         .signal-card {
             background: var(--glass);
@@ -452,6 +464,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
+            margin-top: 15px;
         }
         
         .history-action-btn {
@@ -488,6 +501,15 @@
         
         .loss-action:hover {
             background: rgba(255, 118, 117, 0.3);
+        }
+        
+        .delete-action {
+            background: rgba(255, 118, 117, 0.1);
+            color: var(--danger);
+        }
+        
+        .delete-action:hover {
+            background: rgba(255, 118, 117, 0.2);
         }
         
         /* Анимации */
@@ -592,6 +614,10 @@
                         <div class="stat-value active-trades" id="active-count">0</div>
                         <div class="stat-label">Активных сделок</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-value balance-change" id="balance-change">0%</div>
+                        <div class="stat-label">Изменение баланса</div>
+                    </div>
                 </div>
                 
                 <!-- Текущий сигнал -->
@@ -620,7 +646,7 @@
                             Таймфрейм
                         </div>
                         <div class="value" id="timeframe">
-                            <span>-</span>
+                            <span>5 мин</span>
                         </div>
                     </div>
                 </div>
@@ -670,7 +696,6 @@
             // Конфигурация
             const instruments = ["SOL", "ETH", "BTC", "XAU", "GER40", "EUR", "GBP"];
             const directions = ["LONG", "SHORT"];
-            const timeframes = ["1 мин", "5 мин", "15 мин", "30 мин"];
             
             // Элементы DOM
             const homePage = document.getElementById('home-page');
@@ -688,6 +713,7 @@
             const winCountEl = document.getElementById('win-count');
             const lossCountEl = document.getElementById('loss-count');
             const activeCountEl = document.getElementById('active-count');
+            const balanceChangeEl = document.getElementById('balance-change');
             
             // Текущий сигнал
             let currentSignal = null;
@@ -790,7 +816,7 @@
                             </div>
                             <div class="history-detail">
                                 <div class="label">Таймфрейм</div>
-                                <div class="value">${signal.timeframe}</div>
+                                <div class="value">5 мин</div>
                             </div>
                         </div>
                     `;
@@ -809,6 +835,15 @@
                         `;
                     }
                     
+                    // Добавляем кнопку удаления для всех сделок
+                    historyItem.innerHTML += `
+                        <div class="history-actions">
+                            <button class="history-action-btn delete-action" data-id="${signal.id}">
+                                <i class="fas fa-trash"></i> Удалить
+                            </button>
+                        </div>
+                    `;
+                    
                     historyList.appendChild(historyItem);
                 });
                 
@@ -824,6 +859,25 @@
                         updateSignalResult(this.getAttribute('data-id'), 'loss');
                     });
                 });
+                
+                document.querySelectorAll('.delete-action').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        deleteSignal(this.getAttribute('data-id'));
+                    });
+                });
+            }
+            
+            // Удаление сигнала
+            function deleteSignal(id) {
+                const history = JSON.parse(localStorage.getItem('tradingSignals') || '[]');
+                const updatedHistory = history.filter(signal => signal.id !== id);
+                
+                localStorage.setItem('tradingSignals', JSON.stringify(updatedHistory));
+                loadHistory();
+                updateStats();
+                
+                // Показываем уведомление
+                showNotification('Сигнал удален из истории');
             }
             
             // Обновление результата сигнала
@@ -911,6 +965,12 @@
                 } else {
                     winRateEl.style.color = 'var(--danger)';
                 }
+                
+                // Рассчитываем изменение баланса
+                const balanceChange = (wins * 3) - (losses * 1);
+                balanceChangeEl.textContent = `${balanceChange >= 0 ? '+' : ''}${balanceChange}%`;
+                balanceChangeEl.className = 'stat-value balance-change';
+                balanceChangeEl.classList.add(balanceChange >= 0 ? 'profit' : 'loss');
             }
             
             // Генерация сигнала
@@ -918,12 +978,10 @@
                 // Генерация случайных значений
                 const randomInstrument = instruments[Math.floor(Math.random() * instruments.length)];
                 const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-                const randomTimeframe = timeframes[Math.floor(Math.random() * timeframes.length)];
                 
                 // Обновление интерфейса
                 instrumentEl.querySelector('span').textContent = randomInstrument;
                 directionEl.querySelector('span').textContent = randomDirection;
-                timeframeEl.querySelector('span').textContent = randomTimeframe;
                 
                 // Обновление стилей для направления
                 directionEl.className = 'value';
@@ -939,7 +997,7 @@
                     id: Date.now().toString(),
                     instrument: randomInstrument,
                     direction: randomDirection,
-                    timeframe: randomTimeframe,
+                    timeframe: "5 мин",
                     result: null,
                     timestamp: Date.now()
                 };
@@ -984,7 +1042,6 @@
                 // Обновляем интерфейс
                 instrumentEl.querySelector('span').textContent = '-';
                 directionEl.querySelector('span').textContent = '-';
-                timeframeEl.querySelector('span').textContent = '-';
                 directionEl.className = 'value';
                 
                 // Если открыта страница истории, обновляем её
