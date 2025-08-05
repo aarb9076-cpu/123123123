@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Торговый Генератор - Сигналы и Статистика</title>
+    <title>Торговый Генератор PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -23,6 +23,7 @@
             --light: #f7f9fc;
             --success: #00b894;
             --danger: #ff7675;
+            --active: #0984e3;
             --warning: #fdcb6e;
             --card-bg: rgba(30, 33, 48, 0.92);
             --glass: rgba(255, 255, 255, 0.08);
@@ -243,6 +244,10 @@
             color: var(--danger);
         }
         
+        .active-trades {
+            color: var(--active);
+        }
+        
         /* Сигналы */
         .signal-card {
             background: var(--glass);
@@ -305,18 +310,18 @@
             color: var(--danger);
         }
         
-        /* Кнопки результата */
-        .result-buttons {
+        /* Кнопки */
+        .action-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-top: 20px;
         }
         
-        .result-btn {
-            padding: 16px;
-            border-radius: 15px;
-            font-size: 16px;
+        .action-btn {
+            padding: 18px;
+            border-radius: 18px;
+            font-size: 18px;
             font-weight: 600;
             border: none;
             cursor: pointer;
@@ -324,70 +329,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        .result-btn i {
-            margin-right: 8px;
+        .action-btn i {
+            margin-right: 10px;
         }
         
-        .win-btn {
-            background: rgba(0, 184, 148, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(0, 184, 148, 0.3);
-        }
-        
-        .win-btn:hover {
-            background: rgba(0, 184, 148, 0.25);
-        }
-        
-        .loss-btn {
-            background: rgba(255, 118, 117, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(255, 118, 117, 0.3);
-        }
-        
-        .loss-btn:hover {
-            background: rgba(255, 118, 117, 0.25);
-        }
-        
-        /* Кнопка генерации */
         .generate-btn {
             background: linear-gradient(to right, var(--primary), var(--primary-dark));
             color: white;
-            border: none;
-            padding: 22px 30px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
             box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4);
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 15px;
         }
         
-        .generate-btn i {
-            margin-left: 10px;
-            transition: transform 0.3s ease;
+        .enter-btn {
+            background: linear-gradient(to right, var(--active), #1a75ff);
+            color: white;
+            box-shadow: 0 10px 25px rgba(25, 118, 210, 0.4);
         }
         
-        .generate-btn:hover {
+        .action-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.6);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
         
-        .generate-btn:active {
+        .action-btn:active {
             transform: translateY(1px);
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
         }
         
-        .generate-btn::after {
+        .action-btn::after {
             content: '';
             position: absolute;
             top: -50%;
@@ -399,13 +370,13 @@
             transition: all 0.7s ease;
         }
         
-        .generate-btn:hover::after {
+        .action-btn:hover::after {
             transform: rotate(30deg) translate(20%, 20%);
         }
         
         /* История */
         .history-list {
-            max-height: 50vh;
+            max-height: 60vh;
             overflow-y: auto;
             padding-right: 10px;
         }
@@ -446,19 +417,20 @@
             color: var(--danger);
         }
         
-        .history-pending {
-            color: var(--warning);
+        .history-active {
+            color: var(--active);
         }
         
         .history-details {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
+            margin-bottom: 15px;
         }
         
         .history-detail {
             text-align: center;
-            padding: 8px;
+            padding: 10px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
         }
@@ -479,28 +451,43 @@
         .history-actions {
             display: flex;
             justify-content: center;
-            margin-top: 15px;
             gap: 10px;
         }
         
         .history-action-btn {
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-size: 15px;
+            font-weight: 600;
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .history-action-btn i {
+            margin-right: 8px;
         }
         
         .win-action {
-            background: rgba(0, 184, 148, 0.15);
+            background: rgba(0, 184, 148, 0.2);
             color: var(--success);
         }
         
+        .win-action:hover {
+            background: rgba(0, 184, 148, 0.3);
+        }
+        
         .loss-action {
-            background: rgba(255, 118, 117, 0.15);
+            background: rgba(255, 118, 117, 0.2);
             color: var(--danger);
+        }
+        
+        .loss-action:hover {
+            background: rgba(255, 118, 117, 0.3);
         }
         
         /* Анимации */
@@ -556,17 +543,13 @@
                 font-size: 18px;
             }
             
-            .generate-btn {
-                padding: 20px;
+            .action-btn {
+                padding: 16px;
                 font-size: 17px;
             }
             
-            .result-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .history-details {
-                grid-template-columns: 1fr;
+            .history-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -583,7 +566,7 @@
                             <i class="fas fa-chart-line"></i>
                         </div>
                     </div>
-                    <h1>Торговый Генератор</h1>
+                    <h1>Трейдинг PRO</h1>
                     <div class="subtitle">Профессиональные сигналы для вашей стратегии</div>
                 </div>
                 
@@ -604,6 +587,10 @@
                     <div class="stat-card">
                         <div class="stat-value loss-count" id="loss-count">0</div>
                         <div class="stat-label">Поражений</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value active-trades" id="active-count">0</div>
+                        <div class="stat-label">Активных сделок</div>
                     </div>
                 </div>
                 
@@ -636,21 +623,17 @@
                             <span>-</span>
                         </div>
                     </div>
-                    
-                    <!-- Кнопки результата -->
-                    <div class="result-buttons">
-                        <button class="result-btn win-btn" id="win-btn">
-                            <i class="fas fa-trophy"></i> Победа
-                        </button>
-                        <button class="result-btn loss-btn" id="loss-btn">
-                            <i class="fas fa-times"></i> Поражение
-                        </button>
-                    </div>
                 </div>
                 
-                <button class="generate-btn" id="generateBtn">
-                    Сгенерировать сигнал <i class="fas fa-bolt"></i>
-                </button>
+                <!-- Кнопки действий -->
+                <div class="action-buttons">
+                    <button class="action-btn generate-btn" id="generateBtn">
+                        <i class="fas fa-bolt"></i> Сгенерировать сигнал
+                    </button>
+                    <button class="action-btn enter-btn" id="enterBtn">
+                        <i class="fas fa-play-circle"></i> Зашел в сделку
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -658,8 +641,8 @@
         <div id="history-page" class="page">
             <div class="card">
                 <div class="card-header">
-                    <h1>История Сигналов</h1>
-                    <div class="subtitle">Все сгенерированные торговые сигналы</div>
+                    <h1>История Сделок</h1>
+                    <div class="subtitle">Все ваши торговые операции</div>
                 </div>
                 
                 <div class="history-list" id="history-list">
@@ -698,14 +681,13 @@
             const directionEl = document.getElementById('direction');
             const timeframeEl = document.getElementById('timeframe');
             const generateBtn = document.getElementById('generateBtn');
-            const signalCard = document.getElementById('signalCard');
-            const winBtn = document.getElementById('win-btn');
-            const lossBtn = document.getElementById('loss-btn');
+            const enterBtn = document.getElementById('enterBtn');
             const historyList = document.getElementById('history-list');
             const winRateEl = document.getElementById('win-rate');
             const totalSignalsEl = document.getElementById('total-signals');
             const winCountEl = document.getElementById('win-count');
             const lossCountEl = document.getElementById('loss-count');
+            const activeCountEl = document.getElementById('active-count');
             
             // Текущий сигнал
             let currentSignal = null;
@@ -767,7 +749,7 @@
                     historyList.innerHTML = `
                         <div class="history-item" style="text-align: center; padding: 40px 20px;">
                             <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 20px; opacity: 0.3;"></i>
-                            <div>История сигналов пуста</div>
+                            <div>История сделок пуста</div>
                         </div>
                     `;
                     return;
@@ -779,8 +761,8 @@
                     const historyItem = document.createElement('div');
                     historyItem.className = 'history-item';
                     
-                    let resultClass = 'history-pending';
-                    let resultText = 'Ожидает';
+                    let resultClass = 'history-active';
+                    let resultText = 'В процессе';
                     
                     if (signal.result === 'win') {
                         resultClass = 'history-win';
@@ -811,15 +793,21 @@
                                 <div class="value">${signal.timeframe}</div>
                             </div>
                         </div>
-                        <div class="history-actions">
-                            <button class="history-action-btn win-action" data-id="${signal.id}">
-                                <i class="fas fa-trophy"></i> Победа
-                            </button>
-                            <button class="history-action-btn loss-action" data-id="${signal.id}">
-                                <i class="fas fa-times"></i> Поражение
-                            </button>
-                        </div>
                     `;
+                    
+                    // Добавляем кнопки действий для активных сделок
+                    if (signal.result === 'active') {
+                        historyItem.innerHTML += `
+                            <div class="history-actions">
+                                <button class="history-action-btn win-action" data-id="${signal.id}">
+                                    <i class="fas fa-trophy"></i> Победа
+                                </button>
+                                <button class="history-action-btn loss-action" data-id="${signal.id}">
+                                    <i class="fas fa-times"></i> Поражение
+                                </button>
+                            </div>
+                        `;
+                    }
                     
                     historyList.appendChild(historyItem);
                 });
@@ -845,12 +833,18 @@
                 
                 if (signalIndex !== -1) {
                     history[signalIndex].result = result;
+                    history[signalIndex].closeTimestamp = Date.now();
                     localStorage.setItem('tradingSignals', JSON.stringify(history));
                     loadHistory();
                     updateStats();
                     
                     // Показываем уведомление
-                    showNotification(`Результат обновлен: ${result === 'win' ? 'Победа' : 'Поражение'}`);
+                    showNotification(`Результат сделки: ${result === 'win' ? 'Победа' : 'Поражение'}!`);
+                    
+                    // Вибрация
+                    if (navigator.vibrate) {
+                        navigator.vibrate(result === 'win' ? [100, 50, 100] : [300]);
+                    }
                 }
             }
             
@@ -876,6 +870,9 @@
                     border-radius: 50px;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
                     z-index: 1000;
+                    font-weight: 500;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                     animation: fadeIn 0.3s ease, fadeOut 0.3s ease 2s forwards;
                 `;
                 
@@ -895,14 +892,25 @@
                 const total = history.length;
                 const wins = history.filter(s => s.result === 'win').length;
                 const losses = history.filter(s => s.result === 'loss').length;
+                const active = history.filter(s => s.result === 'active').length;
                 
                 totalSignalsEl.textContent = total;
                 winCountEl.textContent = wins;
                 lossCountEl.textContent = losses;
+                activeCountEl.textContent = active;
                 
                 // Рассчитываем винрейт
                 const winRate = wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
                 winRateEl.textContent = `${winRate}%`;
+                
+                // Изменяем цвет винрейта в зависимости от значения
+                if (winRate >= 70) {
+                    winRateEl.style.color = 'var(--success)';
+                } else if (winRate >= 50) {
+                    winRateEl.style.color = 'var(--warning)';
+                } else {
+                    winRateEl.style.color = 'var(--danger)';
+                }
             }
             
             // Генерация сигнала
@@ -936,7 +944,7 @@
                     timestamp: Date.now()
                 };
                 
-                // Вибрация (если поддерживается)
+                // Вибрация
                 if (navigator.vibrate) {
                     navigator.vibrate([20, 10, 20]);
                 }
@@ -945,11 +953,15 @@
                 showNotification('Новый сигнал сгенерирован!');
             }
             
-            // Сохранение сигнала в историю
-            function saveSignal(result) {
-                if (!currentSignal) return;
+            // Сохранение сигнала как "В сделке"
+            function enterTrade() {
+                if (!currentSignal) {
+                    showNotification('Сначала сгенерируйте сигнал!');
+                    return;
+                }
                 
-                currentSignal.result = result;
+                // Помечаем сигнал как активный
+                currentSignal.result = 'active';
                 
                 // Получаем текущую историю
                 const history = JSON.parse(localStorage.getItem('tradingSignals') || '[]');
@@ -964,10 +976,16 @@
                 updateStats();
                 
                 // Показываем уведомление
-                showNotification(`Сигнал сохранен как ${result === 'win' ? 'Победа' : 'Поражение'}`);
+                showNotification('Вы вошли в сделку!');
                 
                 // Сбрасываем текущий сигнал
                 currentSignal = null;
+                
+                // Обновляем интерфейс
+                instrumentEl.querySelector('span').textContent = '-';
+                directionEl.querySelector('span').textContent = '-';
+                timeframeEl.querySelector('span').textContent = '-';
+                directionEl.className = 'value';
                 
                 // Если открыта страница истории, обновляем её
                 if (historyPage.classList.contains('active')) {
@@ -988,22 +1006,7 @@
                 
                 // Обработчики событий
                 generateBtn.addEventListener('click', generateSignal);
-                
-                winBtn.addEventListener('click', function() {
-                    if (currentSignal) {
-                        saveSignal('win');
-                    } else {
-                        showNotification('Сначала сгенерируйте сигнал!');
-                    }
-                });
-                
-                lossBtn.addEventListener('click', function() {
-                    if (currentSignal) {
-                        saveSignal('loss');
-                    } else {
-                        showNotification('Сначала сгенерируйте сигнал!');
-                    }
-                });
+                enterBtn.addEventListener('click', enterTrade);
                 
                 // Генерация сигналов по нажатию пробела
                 document.addEventListener('keydown', function(e) {
@@ -1019,5 +1022,4 @@
         });
     </script>
 </body>
-
 </html>
